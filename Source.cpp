@@ -20,11 +20,6 @@ void printNormally(char** map, int width, int height) {
 	{
 		for (int y = 0; y < height; y++)
 		{
-			char r = map[x][y];
-			if (r != '0')
-			{
-				int a = 5;
-			}
 			cout << map[x][y] << " ";
 		}
 		cout << endl;
@@ -103,7 +98,7 @@ void fillArrForDecreasedColumnInverted(char** from, char** to, int width, int he
 	{
 		for (int y = height - 1; y >= 0; y--)
 		{
-			to[x][y] = from[x][y - 1];
+			to[x][y] = from[x][y];
 		}
 	}
 }
@@ -122,6 +117,120 @@ char** getTransponated(char** map, int width, int height) {
 	}
 
 	return newMap;
+}
+
+char** getCleared(char** map, int& width, int& height)
+{
+	char** transponated = getTransponated(map, width, height);
+	map = transponated;
+
+	int newWidth = height;
+	int newHeight = width;
+
+	while (true)
+	{
+		bool isRowEmpty = true;
+		bool isColumnEmpty = true;
+
+		for (int y = 0; y < newHeight; y++)
+		{
+			for (int x = 0; x < newWidth; x++)
+			{
+				if (map[x][y] != '0')
+				{
+					isColumnEmpty = false;
+					break;
+				}
+			}
+
+			break;
+		}
+
+		for (int x = 0; x < newWidth; x++)
+		{
+			for (int y = 0; y < newHeight; y++)
+			{
+				if (map[x][y] != '0')
+				{
+					isRowEmpty = false;
+					break;
+				}
+			}
+
+			break;
+		}
+
+		if (isRowEmpty)
+		{
+			char** newMap = decreaseRows(--newWidth, newHeight);
+			fillArrForDecreasedRow(map, newMap, newWidth, newHeight);
+			map = newMap;
+		}
+		else if (isColumnEmpty)
+		{
+			char** newMap = decreaseColumns(newWidth, --newHeight);
+			fillArrForDecreasedColumn(map, newMap, newWidth, newHeight);
+			map = newMap;
+		}
+
+		if (!isRowEmpty && !isColumnEmpty)
+			break;
+	}
+
+	while (true)
+	{
+		bool isRowEmpty = true;
+		bool isColumnEmpty = true;
+
+		for (int y = newHeight - 1; y >= 0; y++)
+		{
+			for (int x = 0; x < newWidth; x++)
+			{
+				if (map[x][y] != '0')
+				{
+					isColumnEmpty = false;
+					break;
+				}
+			}
+
+			break;
+		}
+
+		for (int x = newWidth - 1; x >= 0; x--)
+		{
+			for (int y = 0; y < newHeight; y++)
+			{
+				if (map[x][y] != '0')
+				{
+					isRowEmpty = false;
+					break;
+				}
+			}
+
+			break;
+		}
+
+		if (isRowEmpty)
+		{
+			char** newMap = decreaseRows(--newWidth, newHeight);
+			fillArrForDecreasedRowInverted(map, newMap, newWidth, newHeight);
+			map = newMap;
+		}
+		else if (isColumnEmpty)
+		{
+			char** newMap = decreaseColumns(newWidth, --newHeight);
+			fillArrForDecreasedColumnInverted(map, newMap, newWidth, newHeight);
+			map = newMap;
+		}
+
+		if (!isRowEmpty && !isColumnEmpty)
+			break;
+	}
+
+
+	width = newWidth;
+	height = newHeight;
+	return map;
 }
 
 int main(int argc, char* argv[])
@@ -302,192 +411,10 @@ int main(int argc, char* argv[])
 	//	system("PAUSE");
 	//	return 0;
 	//}
-	////////////////////////////////// cutting down extra zeroes
-	/*int zero = 0;
-	for (int row = 0; row < width; row++)
-	{
-		for (int col = 0; col < height; col++)
-		{
-			if (map[row][col] != '0')
-			{
-				zero++;
-			}
-
-		}
-		if (zero == 0)
-		{
-			delete[] map[row];
-		}
-		zero = 0;
-	}*/
-	//////////////////////////////////////////////
-	//print(map, height, width);
-	//cout << endl << endl << endl << endl;
-	//printNormally(map, height, width);
-
-	char** transponated = getTransponated(map, width, height);
-	map = transponated;
 
 
-
-	/*cout << endl << endl << endl << endl;
-	printNormally(transponated, height, width);
-	return 0;
-	cout << endl << endl << endl;*/
-	/*map = new char* [3];
-	for (int i = 0; i < 3; i++)
-		map[i] = new char[3];
-
-	map[0][0] = '0';
-	map[0][1] = '0';
-	map[0][2] = '0';
-
-	map[1][0] = '1';
-	map[1][1] = '0';
-	map[1][2] = '1';
-
-	map[2][0] = '0';
-	map[2][1] = '0';
-	map[2][2] = '0';
-*/
-
-	int newWidth = height;
-	int newHeight = width;
-
-	/*for (int x = 0; x < newWidth; x++)
-	{
-		for (int y = 0; y < newHeight; y++)
-		{
-			if (map[x][y] != '0')
-			{
-				int k = 10;
-			}
-		}
-	}
-
-	for (int x = 0; x < newWidth; x++)
-	{
-		for (int y = 0; y < newHeight; y++)
-		{
-			char r = map[x][y];
-			if (r != '0')
-			{
-				int a = 5;
-			}
-			cout << map[x][y] << " ";
-		}
-		cout << endl;
-	}*/
-
-	printNormally(map, newWidth, newHeight);
-	while (true)
-	{
-		bool isRowEmpty = true;
-		//bool isColumnEmpty = true;
-
-		/*for (int x = 0; x < newHeight; x++)
-		{
-			for (int y = 0; y < newWidth; y++)
-			{
-				if (map[x][y] != '0')
-				{
-					isColumnEmpty = false;
-					break;
-				}
-			}
-		}*/
-
-		cout << endl << endl;
-		for (int x = 0; x < newWidth; x++)
-		{
-			for (int y = 0; y < newHeight; y++)
-			{
-				if (map[x][y] != '0')
-				{
-					isRowEmpty = false;
-					break;
-				}
-			}
-
-			break;
-		}
-
-		if (isRowEmpty)
-		{
-			char** newMap = decreaseRows(--newWidth, newHeight);
-			fillArrForDecreasedRow(map, newMap, newWidth, newHeight);
-			map = newMap;
-		}
-		/*else if (isColumnEmpty)
-		{
-			char** newMap = decreaseColumns(newWidth, --newHeight);
-			fillArr(map, newMap, newWidth, newHeight);
-			map = newMap;
-		}*/
-
-		/*if (!isRowEmpty && !isColumnEmpty)
-			break;*/
-
-		printNormally(map, newWidth, newHeight);
-		cout << endl << endl;
-		if (!isRowEmpty)
-			break;
-	}
-
-	while (true)
-	{
-		bool isRowEmpty = true;
-		//bool isColumnEmpty = true;
-
-		/*for (int x = 0; x < newHeight; x++)
-		{
-			for (int y = 0; y < newWidth; y++)
-			{
-				if (map[x][y] != '0')
-				{
-					isColumnEmpty = false;
-					break;
-				}
-			}
-		}*/
-
-		cout << endl << endl;
-		for (int x = newWidth - 1; x >= 0; x--)
-		{
-			for (int y = 0; y < newHeight; y++)
-			{
-				if (map[x][y] != '0')
-				{
-					isRowEmpty = false;
-					break;
-				}
-			}
-
-			break;
-		}
-
-		if (isRowEmpty)
-		{
-			char** newMap = decreaseRows(--newWidth, newHeight);
-			fillArrForDecreasedRowInverted(map, newMap, newWidth, newHeight);
-			map = newMap;
-		}
-		/*else if (isColumnEmpty)
-		{
-			char** newMap = decreaseColumns(newWidth, --newHeight);
-			fillArr(map, newMap, newWidth, newHeight);
-			map = newMap;
-		}*/
-
-		/*if (!isRowEmpty && !isColumnEmpty)
-			break;*/
-
-		printNormally(map, newWidth, newHeight);
-		cout << endl << endl;
-		if (!isRowEmpty)
-			break;
-	}
-
+	map = getCleared(map, width, height);
+	printNormally(map, width, height);
 	//print(map, newHeight, newWidth);
 
 	//for (int y = 0; y < height; y++)         
