@@ -132,32 +132,22 @@ char** getCleared(char** map, int& width, int& height)
 		bool isRowEmpty = true;
 		bool isColumnEmpty = true;
 
-		for (int y = 0; y < newHeight; y++)
-		{
-			for (int x = 0; x < newWidth; x++)
-			{
-				if (map[x][y] != '0')
-				{
-					isColumnEmpty = false;
-					break;
-				}
-			}
-
-			break;
-		}
-
 		for (int x = 0; x < newWidth; x++)
 		{
-			for (int y = 0; y < newHeight; y++)
+			if (map[x][0] != '0')
 			{
-				if (map[x][y] != '0')
-				{
-					isRowEmpty = false;
-					break;
-				}
+				isColumnEmpty = false;
+				break;
 			}
+		}
 
-			break;
+		for (int y = 0; y < newHeight; y++)
+		{
+			if (map[0][y] != '0')
+			{
+				isRowEmpty = false;
+				break;
+			}
 		}
 
 		if (isRowEmpty)
@@ -182,32 +172,22 @@ char** getCleared(char** map, int& width, int& height)
 		bool isRowEmpty = true;
 		bool isColumnEmpty = true;
 
-		for (int y = newHeight - 1; y >= 0; y++)
+		for (int x = 0; x < newWidth; x++)
 		{
-			for (int x = 0; x < newWidth; x++)
+			if (map[x][newHeight - 1] != '0')
 			{
-				if (map[x][y] != '0')
-				{
-					isColumnEmpty = false;
-					break;
-				}
+				isColumnEmpty = false;
+				break;
 			}
-
-			break;
 		}
 
-		for (int x = newWidth - 1; x >= 0; x--)
+		for (int y = 0; y < newHeight; y++)
 		{
-			for (int y = 0; y < newHeight; y++)
+			if (map[newWidth - 1][y] != '0')
 			{
-				if (map[x][y] != '0')
-				{
-					isRowEmpty = false;
-					break;
-				}
+				isRowEmpty = false;
+				break;
 			}
-
-			break;
 		}
 
 		if (isRowEmpty)
