@@ -1,28 +1,21 @@
 ﻿#include <iostream>
 #include <fstream> 
+#include <sstream>
 #include <string> 
 
 using namespace std;
+//ofstream ofs("idealimage9.txt");        //used for storing ideal arrays
 
-void print(char** map, int width, int height) {
-	for (int y = 0; y < height; y++)
+void printNormally(char** map, int rows, int columns) {
+	for (int x = 0; x < rows; x++)
 	{
-		for (int x = 0; x < width; x++)
+		for (int y = 0; y < columns; y++) // row = height. column = width
 		{
 			cout << map[x][y] << " ";
+			//ofs << map[x][y] << " ";   //used for storing ideal arrays
 		}
 		cout << endl;
-	}
-}
-
-void printNormally(char** map, int width, int height) {
-	for (int x = 0; x < width; x++)
-	{
-		for (int y = 0; y < height; y++)
-		{
-			cout << map[x][y] << " ";
-		}
-		cout << endl;
+		//ofs << endl;					 //used for storing ideal arrays
 	}
 }
 
@@ -46,17 +39,7 @@ char** decreaseColumns(int rowsCount, int newColumnsCount) {
 	return map;
 }
 
-/*
 
-1 0 1 0
-1 1 1 1
-0 0 0 0
-
-X X X X
-X X X X
-// [0][0]
-
-*/
 void fillArrForDecreasedRow(char** from, char** to, int width, int height) { // [5][5] -> [4][5]
 
 	for (int x = 0; x < width; x++)
@@ -213,140 +196,112 @@ char** getCleared(char** map, int& width, int& height)
 	return map;
 }
 
+void getIdealDimensions(string pictureSrc, int& rows, int& columns)
+{
+	ifstream stream(pictureSrc);
+	string line;
+
+
+	while (getline(stream, line))
+	{
+		columns = line.size() / 2;
+		rows++;
+	}
+
+	stream.close();
+}
+
+char** populateIdealArray(char** idArr, string pictureSrc)
+{
+	int rows = 0, columns = 0;
+	getIdealDimensions(pictureSrc, rows, columns);
+
+	idArr = new char* [rows];
+	for (int i = 0; i < rows; i++)
+		idArr[i] = new char[columns];
+
+	ifstream stream(pictureSrc);
+
+	for (int x = 0; x < rows; x++)
+	{
+		for (int y = 0; y < columns; y++)
+		{
+			stream >> idArr[x][y];
+		}
+	}
+
+
+
+	stream.close();
+
+	return idArr;
+}
+
+
+
+
 int main(int argc, char* argv[])
 {
 	int size = 0, pixels_adress = 0, width = 0, height = 0;
-	char i1[60][50], i3[60][50], i4[60][50], i5[60][50], i6[60][50], i7[60][50], i8[60][50], i9[60][50];
-	char** i2;
-	width = 60;
-	height = 50;
-	i2 = new char* [width];
-	for (int i = 0; i < width; i++)
-		i2[i] = new char[height];
+	//char i1[60][50], i3[60][50], i4[60][50], i5[60][50], i6[60][50], i7[60][50], i8[60][50], i9[60][50];
+	char** i1 = new char* [1], ** i2 = new char* [1], ** i3 = new char* [1], ** i4 = new char* [1], ** i5 = new char* [1], ** i6 = new char* [1],
+		** i7 = new char* [1], ** i8 = new char* [1], ** i9 = new char* [1];
 
-	//arrays for ideal arrays
-	ifstream id1("idealimage1.txt");
-	ifstream id2("idealimage2.txt");
-	ifstream id3("idealimage3.txt");
-	ifstream id4("idealimage4.txt");
-	ifstream id5("idealimage5.txt");
-	ifstream id6("idealimage6.txt");
-	ifstream id7("idealimage7.txt");
-	ifstream id8("idealimage8.txt");
-	ifstream id9("idealimage9.txt");
+	i1 = populateIdealArray(i1, "idealimage1.txt");
+	i2 = populateIdealArray(i2, "idealimage2.txt");
+	i3 = populateIdealArray(i3, "idealimage3.txt");
+	i4 = populateIdealArray(i4, "idealimage4.txt");
+	i5 = populateIdealArray(i5, "idealimage5.txt");
+	i6 = populateIdealArray(i6, "idealimage6.txt");
+	i7 = populateIdealArray(i7, "idealimage7.txt");
+	i8 = populateIdealArray(i8, "idealimage8.txt");
+	i9 = populateIdealArray(i9, "idealimage9.txt");
+
+	/*int rows = 0, columns = 0;
+	getIdealDimensions("idealimage1.txt", rows, columns);
+	printNormally(i1, rows, columns);*/ // INPUT ORIGINAL
+
+
 	/////////////
 	short int bits_per_pixel = 0;
-	//ofstream ofs("idealimage9.txt");    //used for storing ideal arrays
-	/*if (argc >= 2)
+	if (argc >= 2)
 		cout << "Your file is: " << argv[1] << endl;
 	else
 	{
 		cout << "Please drag and drop .bmp file on the .exe" << endl;
 		system("PAUSE");
 		return 0;
-	}*/
-	//ifstream file(argv[1], ios::in | ios::binary);
+	}
+	ifstream file(argv[1], ios::in | ios::binary);
 
-	//file.seekg(2, ios::beg);
+	file.seekg(2, ios::beg);
 
-	//file.read((char*)& size, sizeof(int));
+	file.read((char*)& size, sizeof(int));
+	////////////////////////////////////////////////////
+	file.seekg(10, ios::beg);
+
+	file.read((char*)& pixels_adress, sizeof(int));
 	//////////////////////////////////////////////////////
-	//file.seekg(10, ios::beg);
+	file.seekg(18, ios::beg);
 
-	//file.read((char*)& pixels_adress, sizeof(int));
-	////////////////////////////////////////////////////////
-	//file.seekg(18, ios::beg);
+	file.read((char*)& width, sizeof(int));
 
-	//file.read((char*)& width, sizeof(int));
+	file.read((char*)& height, sizeof(int));
+	///////////////////////////////////////////////////
 
-	//file.read((char*)& height, sizeof(int));
-	/////////////////////////////////////////////////////
-	for (int y = 0; y < height; y++)
-	{
-		for (int x = 0; x < width; x++)
-		{
-			id1 >> i1[x][y];
-		}
-	}
-	for (int y = 0; y < height; y++)
-	{
-		for (int x = 0; x < width; x++)
-		{
-			char a = (char)i2[x][y];
-			id2 >> i2[x][y];
-		}
-	}
-	for (int y = 0; y < height; y++)
-	{
-		for (int x = 0; x < width; x++)
-		{
-			id3 >> i3[x][y];
-		}
-	}
-	for (int y = 0; y < height; y++)
-	{
-		for (int x = 0; x < width; x++)
-		{
-			id4 >> i4[x][y];
-		}
-	}
-	for (int y = 0; y < height; y++)
-	{
-		for (int x = 0; x < width; x++)
-		{
-			id5 >> i5[x][y];
-		}
-	}
-	for (int y = 0; y < height; y++)
-	{
-		for (int x = 0; x < width; x++)
-		{
-			id6 >> i6[x][y];
-		}
-	}
-	for (int y = 0; y < height; y++)
-	{
-		for (int x = 0; x < width; x++)
-		{
-			id7 >> i7[x][y];
-		}
-	}
-	for (int y = 0; y < height; y++)
-	{
-		for (int x = 0; x < width; x++)
-		{
-			id8 >> i8[x][y];
-		}
-	}
-	for (int y = 0; y < height; y++)
-	{
-		for (int x = 0; x < width; x++)
-		{
-			id9 >> i9[x][y];
-		}
-	}
-	id1.close();
-	id2.close();
-	id3.close();
-	id4.close();
-	id5.close();
-	id6.close();
-	id7.close();
-	id8.close();
-	id9.close();
 	///////////////////////////////////////////////ideal arrays created and file streams closed
-	/*if (width != 60 && height != 50)
+	if (width != 60 && height != 50)
 	{
 		cout << "Sorry, but your image needs to be 60x50 pixels" << endl;
 		system("PAUSE");
 		return 0;
-	}*/
+	}
 
-	//file.seekg(28, ios::beg);
+	file.seekg(28, ios::beg);
 
-	//file.read((char*)& bits_per_pixel, sizeof(short int));
+	file.read((char*)& bits_per_pixel, sizeof(short int));
 	///////////////////////////////////////////////////////////
-	//file.seekg(pixels_adress, ios::beg);
+	file.seekg(pixels_adress, ios::beg);
 
 
 	cout << "Size: " << size << endl;
@@ -356,56 +311,59 @@ int main(int argc, char* argv[])
 	cout << "Height: " << height << endl;
 
 
-	//char map[60][50];
 	char** map;
 
 	map = new char* [width];
 	for (int i = 0; i < width; i++)
 		map[i] = new char[height];
 
-	map = i2;
-	//if (bits_per_pixel == 24)
-	//{
-	//	unsigned int bgr = 0;
+	if (bits_per_pixel == 24)
+	{
+		unsigned int bgr = 0;
 
-	//	for (int y = height - 1; y >= 0; y--)
-	//	{
-	//		for (int x = 0; x < width; x++)
-	//		{
-	//			file.read((char*)& bgr, 3);
+		for (int y = height - 1; y >= 0; y--)
+		{
+			for (int x = 0; x < width; x++)
+			{
+				file.read((char*)& bgr, 3);
 
-	//			//cout << bgr << endl;
+				//cout << bgr << endl;
 
-	//			if (bgr == 0xFFFFFF)
-	//				map[x][y] = '0';
-	//			else
-	//				map[x][y] = '1';
+				if (bgr == 0xFFFFFF)
+					map[x][y] = '0';
+				else
+					map[x][y] = '1';
 
-	//			bgr = 0;
-	//		}
-	//	}
-	//}
-	//else
-	//{
-	//	cout << "Sorry, but your image needs to have 24 bits per pixel" << endl;
-	//	system("PAUSE");
-	//	return 0;
-	//}
+				bgr = 0;
+			}
+		}
+	}
+	else
+	{
+		cout << "Sorry, but your image needs to have 24 bits per pixel" << endl;
+		system("PAUSE");
+		return 0;
+	}
 
 
 	map = getCleared(map, width, height);
 	printNormally(map, width, height);
-	//print(map, newHeight, newWidth);
 
-	//for (int y = 0; y < height; y++)         
-	//{
-	//	for (int x = 0; x < width; x++)
-	//	{
-	//		cout << i5[x][y] << " ";
-	//		//ofs << map[x][y] << " ";
-	//	}
-	//	cout << endl;
-	//}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 	/*int i1sim = 0, i2sim = 0, i3sim = 0, i4sim = 0, i5sim = 0, i6sim = 0, i7sim = 0, i8sim = 0, i9sim = 0;
 	for (int y = 0; y < height; y++)
 	{
