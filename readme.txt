@@ -1,0 +1,1 @@
+drag "cursive digit" bmp onto digitrec.exe file
